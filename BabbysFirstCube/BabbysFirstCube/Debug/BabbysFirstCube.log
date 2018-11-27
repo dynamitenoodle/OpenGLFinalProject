@@ -1,0 +1,9 @@
+﻿  main.cpp
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\crtdbg.h(302): warning C4005: '_malloca': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\malloc.h(121): note: see previous definition of '_malloca'
+c:\users\coehl\desktop\pong\babbysfirstcube\babbysfirstcube\main.cpp(19): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  BabbysFirstCube.vcxproj -> C:\Users\Coehl\Desktop\Pong\BabbysFirstCube\Debug\BabbysFirstCube.exe
+  A subdirectory or file C:\Users\Coehl\Desktop\Pong\BabbysFirstCube\Debug\assets already exists.
+  C:\Users\Coehl\Desktop\Pong\BabbysFirstCube\assets\shaders\fragmentShader.glsl
+  C:\Users\Coehl\Desktop\Pong\BabbysFirstCube\assets\shaders\vertexShader.glsl
+  2 File(s) copied
