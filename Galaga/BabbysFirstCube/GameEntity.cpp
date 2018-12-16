@@ -8,8 +8,7 @@ GameEntity::GameEntity(Mesh * mesh,
 	glm::vec3 position,
 	glm::vec3 eulerAngles,
 	glm::vec3 scale,
-	GLFWwindow* window,
-	bool isPlayer)
+	GLFWwindow* window)
 {
 	this->mesh = mesh;
 	this->material = material;
@@ -23,7 +22,6 @@ GameEntity::GameEntity(Mesh * mesh,
 	this->color.z = 0.0f;
 
 	this->window = window;
-	this->isPlayer = isPlayer;
 
 	if (scale.y < 0.25f)
 		speed = 0.05f;
@@ -34,18 +32,16 @@ GameEntity::GameEntity(Mesh * mesh,
 	reflectY = false;
 }
 
+GameEntity::GameEntity()
+{
+}
+
 GameEntity::~GameEntity()
 {
 }
 
 void GameEntity::Update()
 {
-	if (isPlayer)
-		InputCheck();
-
-	else if (scale.y < 0.25f)
-		BallMove();
-
 	worldMatrix = glm::translate(
 		glm::identity<glm::mat4>(),
 		this->position
@@ -75,52 +71,6 @@ void GameEntity::Update()
 	);
 }
 
-void GameEntity::InputCheck() 
-{
-	float height = 2.5f;
-
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && this->position.y < height)
-	{
-		this->position.y += speed;
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && this->position.y > -height)
-	{
-		this->position.y -= speed;
-	}
-}
-
-void GameEntity::BallMove()
-{
-	float height = 3.4f;
-	float width = 4.5f;
-
-	// Checking Reflect Speeds
-	if (!reflectX)
-		this->position.x += speed;
-	else
-		this->position.x -= speed;
-
-	if (!reflectY)
-		this->position.y += speed;
-	else
-		this->position.y -= speed;
-
-	// Checking Easy Bounces on walls
-	if (this->position.y > height || this->position.y < -height)
-		reflectY = !reflectY;
-
-	if (this->position.x > width || this->position.x < -width)
-		reflectX = !reflectX;
-
-	// Checking if a win happens
-	if (this->position.x > width)
-		*scorePlayer = *scorePlayer + 1;
-
-	if (this->position.x < -width)
-		*scorePlayer2 = *scorePlayer2 + 1;
-}
-
 void GameEntity::CollideCheck(GameEntity* entity)
 {
 	// Collision Check
@@ -144,18 +94,6 @@ void GameEntity::CollideCheck(GameEntity* entity)
 	}
 }
 
-void GameEntity::TrackBall(GameEntity* ball)
-{
-	float height = 2.5f;
-
-	if (ball->position.y > this->position.y && this->position.y < height)
-		this->position.y += speed * .75f;
-	else if (ball->position.y < this->position.y && this->position.y > -height)
-		this->position.y -= speed * .75f;
-	else
-		this->position.y = this->position.y;
-}
-
 bool GameEntity::RightCheck(GameEntity* entity) { return this->position.x + this->scale.x >= entity->position.x - entity->scale.x; }
 
 bool GameEntity::LeftCheck(GameEntity* entity) { return this->position.x - this->scale.x <= entity->position.x + entity->scale.x; }
@@ -163,12 +101,6 @@ bool GameEntity::LeftCheck(GameEntity* entity) { return this->position.x - this-
 bool GameEntity::UpCheck(GameEntity* entity) { return this->position.y + this->scale.y >= entity->position.y - entity->scale.y; }
 
 bool GameEntity::DownCheck(GameEntity* entity) { return this->position.y - this->scale.y <= entity->position.y + entity->scale.y; }
-
-void GameEntity::SetScores(int * score1, int * score2)
-{
-	scorePlayer = score1;
-	scorePlayer2 = score2;
-}
 
 void GameEntity::Render(Camera* camera)
 {

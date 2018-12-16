@@ -9,33 +9,38 @@
 /// </summary>
 class GameEntity
 {
-private:
+protected:
     Mesh* mesh;        
     Material* material;
     
 	glm::mat4 worldMatrix;
 	GLFWwindow* window;
 
-	bool isPlayer;
 	float speed;
 	bool reflectX;
 	bool reflectY;
 
-	int* scorePlayer;
-	int* scorePlayer2;
+	/// <summary>
+	/// Changes the color of the game entity
+	/// </summary>
+	void ChangeColor(float r, float g, float b, float a);
 public: 
     /// <summary>
     /// Basic paramterized constructor for most of our private vars
     /// </summary>
-    GameEntity(
-        Mesh* mesh,
-        Material* material,
-        glm::vec3 position,
-        glm::vec3 eulerAngles,
-        glm::vec3 scale,
-		GLFWwindow* window,
-		bool isPlayer
-    );
+	GameEntity(
+		Mesh* mesh,
+		Material* material,
+		glm::vec3 position,
+		glm::vec3 eulerAngles,
+		glm::vec3 scale,
+		GLFWwindow* window
+	);
+
+	/// <summary>
+	/// Default for inheritance
+	/// </summary>
+	GameEntity();
 
 	//TODO - maybe this should be in a transform class?
 	glm::vec3 position;
@@ -54,24 +59,9 @@ public:
     virtual void Update();
 
 	/// <summary>
-	/// Checks to see if we should move
-	/// </summary>
-	void InputCheck();
-
-	/// <summary>
-	/// Moves the pong ball
-	/// </summary>
-	void BallMove();
-
-	/// <summary>
 	/// Renders the gameEntity based on a camera
 	/// </summary>
 	void Render(Camera* camera);
-
-	/// <summary>
-	/// Changes the color of the game entity
-	/// </summary>
-	void ChangeColor(float r, float g, float b, float a);
 
 	/// <summary>
 	/// Sets the color to a specific color
@@ -94,11 +84,6 @@ public:
 	void CollideCheck(GameEntity* entity);
 
 	/// <summary>
-	/// Seek the ball y position
-	/// </summary>
-	void TrackBall(GameEntity * ball);
-
-	/// <summary>
 	/// Checking Right
 	/// </summary>
 	bool RightCheck(GameEntity* entity);
@@ -117,10 +102,5 @@ public:
 	/// Checking Down
 	/// </summary>
 	bool DownCheck(GameEntity* entity);
-
-	/// <summary>
-	/// Set Score Pointers
-	/// </summary>
-	void SetScores(int* score1, int* score2);
 };
 

@@ -7,6 +7,8 @@
 #include "Input.h"
 #include <stdlib.h>
 #include <time.h>  
+#include "Star.h"
+#include "Player.h"
 
 //TODO - maybe make some #define macro for a print if debug?
 //TODO - make an Engine class with a specific Init() and Run() function such that
@@ -35,8 +37,8 @@ int main()
 #endif // _DEBUG
 
         //create & init window, set viewport
-        int width = 800;
-        int height = 600;
+        int width = 700;
+        int height = 800;
         GLFWwindow* window = glfwCreateWindow(width, height, "Babby's First Cube?", nullptr, nullptr);
         {
             if (window == nullptr)
@@ -147,51 +149,56 @@ int main()
 
         //TODO - maybe a GameEntityManager?
 		GameEntity** myGameEntities = new GameEntity*[100];
-		GameEntity** myNumberEntities = new GameEntity*[100];
+		Star** starEntities = new Star*[200];
+		Player* playerEntity;
 		int entityCount = 0;
-		int numberCount = 0;
+		int starCount = 0;
 
 		/*Creating the Game Objects*/
 		{
-			// Set the two boards
-			myGameEntities[entityCount] = new GameEntity(
+			// Creating the player
+			playerEntity = new Player(
 				squareMesh,
 				material,
-				glm::vec3(-4.1f, 0, 0), 
+				glm::vec3(0, -2.8f, 0), 
 				glm::vec3(0, 0, 0), 
-				glm::vec3(0.08f, 0.8f, 1.0f),
-				window,
-				true
+				glm::vec3(0.15f, 0.15f, 1.0f),
+				window
 			);
-			myGameEntities[entityCount]->NewColor(1.0f, 1.0f, 1.0f, 1.f);
-			entityCount++;
+			playerEntity->NewColor(0.5f, 0.5f, 1.0f, 1.f);
 
+			// Test Enemy
 			myGameEntities[entityCount] = new GameEntity(
 				squareMesh,
 				material,
-				glm::vec3(4.1f, 0, 0),
+				glm::vec3(0, 3.0f, 0),
 				glm::vec3(0, 0, 0),
-				glm::vec3(0.08f, 0.8f, 1.0f),
-				window,
-				false
+				glm::vec3(0.15f, 0.15f, 1.0f),
+				window
 			);
-			myGameEntities[entityCount]->NewColor(1.0f, 1.0f, 1.0f, 1.f);
-			entityCount++;
-
-			// ball
-			myGameEntities[entityCount] = new GameEntity(
-				squareMesh,
-				material,
-				glm::vec3(0, 0, 0),
-				glm::vec3(0, 0, 0),
-				glm::vec3(0.1f, 0.1f, 1.0f),
-				window,
-				false
-			);
-			myGameEntities[entityCount]->NewColor(1.0f, 1.0f, 1.0f, 1.f);
+			myGameEntities[entityCount]->NewColor(1.0f, 0.0f, 0.0f, 1.f);
 			entityCount++;
 		}
 
+		/* Background effects */
+		{
+			for (int i = 0; i < 200; i++)
+			{
+				GLfloat xPos = (rand() % 690) / 100.0f - 3.45f;
+				GLfloat yPos = (rand() % 790) / 100.0f - 3.95f;
+
+				starEntities[starCount] = new Star(
+					squareMesh,
+					material,
+					glm::vec3(xPos, yPos, 0),
+					glm::vec3(0, 0, 0),
+					glm::vec3(0.02f, 0.02f, 1.0f),
+					window
+				);
+				starEntities[starCount]->NewColor((rand() % 100) / 100.0f, (rand() % 100) / 100.0f, (rand() % 100) / 100.0f, 1.f);
+				starCount++;
+			}
+		}
 
         //TODO - maybe a CameraManager?
         Camera* myCamera = new Camera(
@@ -222,12 +229,6 @@ int main()
         glDepthFunc(GL_LESS);
 
         //main loop
-		int* scorePlayer = new int();
-		int* scorePlayer2 = new int();
-		*scorePlayer = 0;
-		*scorePlayer2 = 0;
-		myGameEntities[2]->SetScores(scorePlayer, scorePlayer2);
-
 		while (!glfwWindowShouldClose(window))
         {
             /* INPUT */
@@ -241,30 +242,18 @@ int main()
 					break;
 				}
 
-				// displays score is space is pressed
-				if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-				{
-					std::cout << "Player1:" << *scorePlayer << "  Player2: " << *scorePlayer2 << std::endl;
-				}
-
             }
 
             /* GAMEPLAY UPDATE */
-			// Ball Collision Check
-			myGameEntities[2]->CollideCheck(myGameEntities[0]);
-			myGameEntities[2]->CollideCheck(myGameEntities[1]);
-
-			// Enemy Tracking Check
-			myGameEntities[1]->TrackBall(myGameEntities[2]);
-			
+			playerEntity->Update();
 			for (int i = 0; i < entityCount; i++)
 			{
 				myGameEntities[i]->Update();
 			}
 
-			for (int i = 0; i < numberCount; i++)
+			for (int i = 0; i < starCount; i++)
 			{
-				myNumberEntities[i]->Update();
+				starEntities[i]->Update();
 			}
 
             myCamera->Update();
@@ -279,19 +268,16 @@ int main()
             }
 
             /* RENDER */
-			// Render the opaque
-			for (int i = 1; i < entityCount; i++)
+			playerEntity->Render(myCamera);
+			for (int i = 0; i < entityCount; i++)
 			{
 				myGameEntities[i]->Render(myCamera);
 			}
 
-			for (int i = 0; i < numberCount; i++)
+			for (int i = 0; i < starCount; i++)
 			{
-				myNumberEntities[i]->Render(myCamera);
+				starEntities[i]->Render(myCamera);
 			}
-
-			// Render the transparent
-			myGameEntities[0]->Render(myCamera);
 
             /* POST-RENDER */
             {
@@ -306,13 +292,14 @@ int main()
         //de-allocate our mesh!
 		delete squareMesh;
         delete material;
+		delete playerEntity;
 		for (int i = 0; i < entityCount; i++)
 		{
 			delete myGameEntities[i];
 		}
-		for (int i = 0; i < numberCount; i++)
+		for (int i = 0; i < starCount; i++)
 		{
-			delete myNumberEntities[i];
+			delete starEntities[i];
 		}
         delete myCamera;
         Input::Release();

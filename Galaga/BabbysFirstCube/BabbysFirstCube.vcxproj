@@ -138,7 +138,9 @@ xcopy "$(SolutionDir)assets" "$(OutDir)assets" /S /Y /E
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="Star.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Assets\Shaders\fragmentShader.glsl" />
@@ -151,7 +153,9 @@ xcopy "$(SolutionDir)assets" "$(OutDir)assets" /S /Y /E
     <ClInclude Include="main.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="Star.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
