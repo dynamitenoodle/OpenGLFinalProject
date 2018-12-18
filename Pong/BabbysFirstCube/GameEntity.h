@@ -63,6 +63,8 @@ public:
 	/// </summary>
 	void BallMove();
 
+	void PointLineCollideCheck(GameEntity * entity);
+
 	/// <summary>
 	/// Renders the gameEntity based on a camera
 	/// </summary>

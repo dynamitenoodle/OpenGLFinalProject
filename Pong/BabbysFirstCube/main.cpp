@@ -251,7 +251,8 @@ int main()
 
             /* GAMEPLAY UPDATE */
 			// Ball Collision Check
-			myGameEntities[2]->CollideCheck(myGameEntities[0]);
+			//myGameEntities[2]->CollideCheck(myGameEntities[0]);
+			myGameEntities[0]->PointLineCollideCheck(myGameEntities[2]);
 			myGameEntities[2]->CollideCheck(myGameEntities[1]);
 
 			// Enemy Tracking Check

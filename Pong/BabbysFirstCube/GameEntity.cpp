@@ -2,6 +2,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <stdlib.h>
 #include <time.h>  
+using namespace std;
 
 GameEntity::GameEntity(Mesh * mesh,
 	Material * material,
@@ -120,6 +121,37 @@ void GameEntity::BallMove()
 	if (this->position.x < -width)
 		*scorePlayer2 = *scorePlayer2 + 1;
 }
+
+void GameEntity::PointLineCollideCheck(GameEntity* ball)
+{
+	//HELP FROM http://www.jeffreythompson.org/collision-detection/line-point.php
+
+	float height = 2.5f;
+	//Find the Beginning and End of the Line Segment
+	glm::vec3 beginning = glm::vec3(this->position.x, this->position.y + ((.5)*height), this->position.z);
+	glm::vec3 end = glm::vec3(this->position.x, this->position.y - ((.5)*height), this->position.z);
+
+	//Find distance to ball's center from the beginning and the end of the player
+	float distanceFromBeginning = glm::distance(beginning,ball->position);
+	float distanceFromEnd = glm::distance(beginning, ball->position);
+
+	//Find out exactly how big the line is
+	float lineLength = glm::distance(beginning, end);
+
+	//Buffer so that it is not PointPoint colision
+	float buffer = 0.5f;
+
+	float xDistance = glm::distance(beginning.x, ball->position.x);
+
+	if (distanceFromBeginning + distanceFromEnd >= lineLength - buffer && distanceFromBeginning + distanceFromEnd <= lineLength + buffer && xDistance <=.7f)
+	{
+		cout << "COLLISION";
+		ball->reflectX = !ball->reflectX;
+	}
+
+
+}
+
 
 void GameEntity::CollideCheck(GameEntity* entity)
 {
