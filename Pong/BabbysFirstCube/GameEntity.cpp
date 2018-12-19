@@ -139,11 +139,11 @@ void GameEntity::PointLineCollideCheck(GameEntity* ball)
 	float lineLength = glm::distance(beginning, end);
 
 	//Buffer so that it is not PointPoint colision
-	float buffer = 0.5f;
+	float buffer = 1.5f;
 
 	float xDistance = glm::distance(beginning.x, ball->position.x);
 
-	if (distanceFromBeginning + distanceFromEnd >= lineLength - buffer && distanceFromBeginning + distanceFromEnd <= lineLength + buffer && xDistance <=.7f)
+	if (distanceFromBeginning + distanceFromEnd >= lineLength - buffer && distanceFromBeginning + distanceFromEnd <= lineLength + buffer && xDistance <=.3f)
 	{
 		cout << "COLLISION";
 		ball->reflectX = !ball->reflectX;
