@@ -23,13 +23,14 @@ Player::Player(Mesh * mesh,
 
 	this->window = window;
 
-	speed = 0.05f;
+	this->force = 0.005f;
+	this->maxVel = 0.05f;
 
 	// Bullets
-	bullets = new GameEntity*[5];
-	bulletCount = 0;
-	spaceUp = true;
-}
+	this->bullets = new GameEntity*[5];
+	this->bulletCount = 0;
+	this->spaceUp = true;
+}	
 
 
 Player::~Player()
@@ -41,47 +42,41 @@ void Player::Update()
 	this->BulletsUpdate();
 	this->InputCheck();
 
-	this->worldMatrix = glm::translate(
-		glm::identity<glm::mat4>(),
-		this->position
-	);
-
-	this->worldMatrix = glm::rotate(
-		worldMatrix,
-		this->eulerAngles.y,
-		glm::vec3(0.f, 1.f, 0.f)
-	);
-
-	this->worldMatrix = glm::rotate(
-		worldMatrix,
-		this->eulerAngles.x,
-		glm::vec3(1.f, 0.f, 0.f)
-	);
-
-	this->worldMatrix = glm::rotate(
-		worldMatrix,
-		this->eulerAngles.z,
-		glm::vec3(0.f, 0.f, 1.f)
-	);
-
-	this->worldMatrix = glm::scale(
-		worldMatrix,
-		this->scale
-	);
+	this->UpdateTransform();
 }
 
 void Player::InputCheck()
 {
 	float width = 2.85f;
+	bool seekingCheck = true;
+
+	// input right
 	if ((glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) && this->position.x < width)
 	{
-		this->position.x += speed;
+		this->seekingPos = this->position;
+		this->seekingPos.x = this->position.x + 1.0f;
+		seekingCheck = false;
 	}
 
+	// input left
 	if ((glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) && this->position.x > -width)
 	{
-		this->position.x -= speed;
+		this->seekingPos = this->position;
+		this->seekingPos.x = this->position.x - 1.0f;
+		seekingCheck = false;
 	}
+	
+	// if we need to STOP
+	if (seekingCheck)
+	{
+		this->seekingPos = this->position;
+		this->velocity *= .94f;
+	}
+
+	if (this->position.x > width)
+		this->position.x = width;
+	if (this->position.x < -width)
+		this->position.x = -width;
 
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && bulletCount < 5 && spaceUp)
 	{
@@ -100,7 +95,7 @@ void Player::BulletsUpdate()
 	{
 		if (!bullets[i]->isDead)
 		{
-			bullets[i]->Update();
+			bullets[i]->UpdateTransform();
 			if (bullets[i]->position.y > 4.1f)
 			{
 				bullets[i]->isDead = true;
@@ -136,9 +131,12 @@ void Player::GenerateBullet()
 		glm::vec3(0.05f, 0.05f, 1.0f),
 		window
 	);
-	bullets[bulletCount]->speed = .1f;
+	bullets[bulletCount]->force = .1f;
+	bullets[bulletCount]->maxVel = .1f;
+	bullets[bulletCount]->seekingPos = this->position;
+	bullets[bulletCount]->seekingPos.y = 4.5f;
 	bullets[bulletCount]->NewColor(1.0f, 1.0f, 1.0f, 1.f);
-	bullets[bulletCount]->Update();
+	bullets[bulletCount]->UpdateTransform();
 	bulletCount++;
 }
 

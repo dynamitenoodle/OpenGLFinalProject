@@ -38,11 +38,14 @@ public:
 	/// </summary>
 	GameEntity();
 
+	glm::vec3 acceleration;
+	glm::vec3 velocity;
 	glm::vec3 position;
 	glm::vec3 eulerAngles;
 	glm::vec3 scale;
 	glm::vec4 color;
-	float speed;
+	float force;
+	float maxVel;
 	bool isDead;
 	glm::vec3 seekingPos;
 
@@ -54,7 +57,7 @@ public:
     /// <summary>
     /// Updates the worldMatrix
     /// </summary>
-    virtual void Update();
+    virtual void UpdateTransform();
 
 	/// <summary>
 	/// Renders the gameEntity based on a camera
@@ -74,7 +77,7 @@ public:
 	/// <summary>
 	/// Returns the distance between a point and the game entity position using MATH
 	/// </summary>
-	float GetDistance(float xPos, float yPos, float zPos);
+	float GetDistance(float xPos, float yPos);
 
 	/// <summary>
 	/// Checking Collision with other GameObjects

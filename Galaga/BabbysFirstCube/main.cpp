@@ -173,6 +173,7 @@ int main()
 			playerEntity->NewColor(0.5f, 0.5f, 1.0f, 1.f);
 
 			// Test Enemies
+			
 			for (int i = -1; i < 2; i++) 
 			{
 				GLfloat x = i * 1.0f;
@@ -186,6 +187,8 @@ int main()
 				);
 				myGameEntities[entityCount]->NewColor(1.0f, 0.0f, 0.0f, 1.f);
 				myGameEntities[entityCount]->seekingPos = glm::vec3(x, 0.0f, 0);
+				myGameEntities[entityCount]->force = 0.01f;
+				myGameEntities[entityCount]->maxVel = 0.05f;
 				entityCount++;
 			}
 		}
@@ -262,7 +265,7 @@ int main()
 			int toDelete = -1;
 			for (int i = 0; i < entityCount; i++)
 			{
-				myGameEntities[i]->Update();
+				myGameEntities[i]->UpdateTransform();
 				if (myGameEntities[i]->isDead)
 					toDelete = i;
 			}

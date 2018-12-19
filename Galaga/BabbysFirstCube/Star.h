@@ -6,6 +6,7 @@ class Star : public GameEntity
 private:
 	int flickerTimer;
 	int flickerTimerMax;
+	float speed;
 public:
 	Star(
 		Mesh* mesh,

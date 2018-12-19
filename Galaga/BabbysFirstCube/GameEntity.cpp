@@ -26,7 +26,9 @@ GameEntity::GameEntity(Mesh * mesh,
 
 	this->window = window;
 
-	speed = 0;
+	force = 0;
+	maxVel = 0;
+	seekingPos = glm::vec3(0, 0, 0);
 
 	isDead = false;
 }
@@ -39,9 +41,41 @@ GameEntity::~GameEntity()
 {
 }
 
-void GameEntity::Update()
+void GameEntity::UpdateTransform()
 {
-	this->position.y += speed;
+	// accel
+	if (GetDistance(this->seekingPos.x, this->seekingPos.y) > .01f)
+	{
+		this->acceleration.x = this->seekingPos.x - this->position.x;
+		this->acceleration.y = this->seekingPos.y - this->position.y;
+		float num = glm::sqrt((this->acceleration.x * this->acceleration.x) + (this->acceleration.y * this->acceleration.y));
+
+		// if we aren't not movin
+		if (num != 0)
+		{
+			this->acceleration.x /= num;
+			this->acceleration.y /= num;
+			this->acceleration *= this->force;
+		}
+
+		// vel
+		this->velocity += this->acceleration;
+
+		// clamp
+		if (glm::sqrt((this->velocity.x * this->velocity.x) + (this->velocity.y * this->velocity.y)) > this->maxVel)
+		{
+			std::cout << "HIT" << std::endl;
+			float num2 = glm::sqrt((this->velocity.x * this->velocity.x) + (this->velocity.y * this->velocity.y));
+			this->velocity.x /= num2;
+			this->velocity.y /= num2;
+			this->velocity *= this->maxVel;
+		}
+
+		//set position
+		this->position += this->velocity;
+	}
+	else
+		this->velocity *= .95f;
 
 	worldMatrix = glm::translate(
 		glm::identity<glm::mat4>(),
@@ -120,9 +154,9 @@ void GameEntity::NewColor(float r, float g, float b, float a)
 	color.a = a;
 }
 
-float GameEntity::GetDistance(float xPos, float yPos, float zPos)
+float GameEntity::GetDistance(float xPos, float yPos)
 {
-	return glm::sqrt((xPos - this->position.x) * (xPos - this->position.x)) + ((yPos - this->position.y) * (yPos - this->position.y) + (zPos - this->position.z) * (zPos - this->position.z));
+	return glm::sqrt((xPos - this->position.x) * (xPos - this->position.x)) + ((yPos - this->position.y) * (yPos - this->position.y));
 }
 
 void GameEntity::SetDraw(bool set)
