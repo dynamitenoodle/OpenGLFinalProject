@@ -10,10 +10,6 @@
 #include "Star.h"
 #include "Player.h"
 
-//TODO - maybe make some #define macro for a print if debug?
-//TODO - make an Engine class with a specific Init() and Run() function such that
-//       our Main.cpp is kept clean and tidy
-
 int main()
 {
     {
@@ -140,12 +136,21 @@ int main()
 			-1.0f, 1.0f, 1.0f
 		};
 
+		GLfloat triangleVertices[] = {
+			-1.0f, -1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f,
+			1.0f, -1.0f, 1.0f
+		};
+
         //create our mesh & material
         //TODO - maybe have a MeshManager & a MaterialManager
 		Material* material = new Material(shaderProgram);
 
 		Mesh* squareMesh = new Mesh();
 		squareMesh->InitWithVertexArray(squareVertices, _countof(squareVertices), shaderProgram);
+
+		Mesh* triangleMesh = new Mesh();
+		triangleMesh->InitWithVertexArray(triangleVertices, _countof(triangleVertices), shaderProgram);
 
         //TODO - maybe a GameEntityManager?
 		GameEntity** myGameEntities = new GameEntity*[25];
@@ -168,38 +173,21 @@ int main()
 			playerEntity->NewColor(0.5f, 0.5f, 1.0f, 1.f);
 
 			// Test Enemies
-			myGameEntities[entityCount] = new GameEntity(
-				squareMesh,
-				material,
-				glm::vec3(-1.0f, 3.0f, 0),
-				glm::vec3(0, 0, 0),
-				glm::vec3(0.15f, 0.15f, 1.0f),
-				window
-			);
-			myGameEntities[entityCount]->NewColor(1.0f, 0.0f, 0.0f, 1.f);
-			entityCount++;
-
-			myGameEntities[entityCount] = new GameEntity(
-				squareMesh,
-				material,
-				glm::vec3(1.0f, 3.0f, 0),
-				glm::vec3(0, 0, 0),
-				glm::vec3(0.15f, 0.15f, 1.0f),
-				window
-			);
-			myGameEntities[entityCount]->NewColor(1.0f, 0.0f, 0.0f, 1.f);
-			entityCount++;
-
-			myGameEntities[entityCount] = new GameEntity(
-				squareMesh,
-				material,
-				glm::vec3(0, 3.0f, 0),
-				glm::vec3(0, 0, 0),
-				glm::vec3(0.15f, 0.15f, 1.0f),
-				window
-			);
-			myGameEntities[entityCount]->NewColor(1.0f, 0.0f, 0.0f, 1.f);
-			entityCount++;
+			for (int i = -1; i < 2; i++) 
+			{
+				GLfloat x = i * 1.0f;
+				myGameEntities[entityCount] = new GameEntity(
+					triangleMesh,
+					material,
+					glm::vec3(x, 3.0f, 0),
+					glm::vec3(0.0f, 0.0f, 3.15f),
+					glm::vec3(0.15f, 0.15f, 1.0f),
+					window
+				);
+				myGameEntities[entityCount]->NewColor(1.0f, 0.0f, 0.0f, 1.f);
+				myGameEntities[entityCount]->seekingPos = glm::vec3(x, 0.0f, 0);
+				entityCount++;
+			}
 		}
 		playerEntity->enemies = myGameEntities;
 		playerEntity->enemyCount = &entityCount;
@@ -329,6 +317,7 @@ int main()
         }
 
         //de-allocate our mesh!
+		delete triangleMesh;
 		delete squareMesh;
         delete material;
 		delete playerEntity;

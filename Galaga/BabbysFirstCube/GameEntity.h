@@ -44,6 +44,7 @@ public:
 	glm::vec4 color;
 	float speed;
 	bool isDead;
+	glm::vec3 seekingPos;
 
     /// <summary>
     /// Destruction

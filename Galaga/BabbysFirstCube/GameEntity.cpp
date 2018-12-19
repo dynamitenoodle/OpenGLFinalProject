@@ -1,7 +1,10 @@
+#define GLM_ENABLE_EXPERIMENTAL
 #include "GameEntity.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include <stdlib.h>
 #include <time.h>  
+#include <glm/gtc/quaternion.hpp> 
+#include <glm/gtx/quaternion.hpp>
 
 GameEntity::GameEntity(Mesh * mesh,
 	Material * material,
@@ -45,12 +48,10 @@ void GameEntity::Update()
 		this->position
 	);
 
-	worldMatrix = glm::rotate(
-		worldMatrix,
-		this->eulerAngles.y,
-		glm::vec3(0.f, 1.f, 0.f)
-	);
+	// Conversion from Euler angles (in radians) to Quaternion, times world matrix
+	worldMatrix *= glm::toMat4(glm::quat(this->eulerAngles));
 
+	/* Old Rotations 
 	worldMatrix = glm::rotate(
 		worldMatrix,
 		this->eulerAngles.x,
@@ -59,9 +60,16 @@ void GameEntity::Update()
 
 	worldMatrix = glm::rotate(
 		worldMatrix,
+		this->eulerAngles.y,
+		glm::vec3(0.f, 1.f, 0.f)
+	);
+
+	worldMatrix = glm::rotate(
+		worldMatrix,
 		this->eulerAngles.z,
 		glm::vec3(0.f, 0.f, 1.f)
 	);
+	*/
 
 	worldMatrix = glm::scale(
 		worldMatrix,
