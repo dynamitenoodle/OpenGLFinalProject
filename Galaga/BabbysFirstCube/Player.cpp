@@ -24,8 +24,11 @@ Player::Player(Mesh * mesh,
 	this->window = window;
 
 	speed = 0.05f;
-	bullets = new GameEntity*[10];
+
+	// Bullets
+	bullets = new GameEntity*[5];
 	bulletCount = 0;
+	spaceUp = true;
 }
 
 
@@ -79,14 +82,64 @@ void Player::InputCheck()
 	{
 		this->position.x -= speed;
 	}
+
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && bulletCount < 5 && spaceUp)
+	{
+		spaceUp = false;
+		GenerateBullet();
+	}
+
+	else if (!glfwGetKey(window, GLFW_KEY_SPACE))
+		spaceUp = true;
 }
 
 void Player::BulletsUpdate()
 {
+	bool moveBullets = false;
 	for (int i = 0; i < bulletCount; i++)
 	{
-		bullets[i]->Update();
+		if (!bullets[i]->isDead)
+		{
+			bullets[i]->Update();
+			if (bullets[i]->position.y > 4.1f)
+			{
+				bullets[i]->isDead = true;
+			}
+
+			for (int j = 0; j < *enemyCount; j++)
+			{
+				bullets[i]->CollideCheck(enemies[j]);
+			}
+		}
+		else
+			moveBullets = true;
 	}
+
+	// Checks to see if a bullet needs to delete
+	if (moveBullets) 
+	{
+		delete bullets[0];
+		for (int i = 0; i < bulletCount - 1; i++)
+			bullets[i] = bullets[i + 1];
+
+		bulletCount--;
+	}
+}
+
+void Player::GenerateBullet()
+{
+	bullets[bulletCount] = new GameEntity(
+		mesh,
+		material,
+		position,
+		glm::vec3(0, 0, 0),
+		glm::vec3(0.05f, 0.05f, 1.0f),
+		window
+	);
+	bullets[bulletCount]->speed = .1f;
+	bullets[bulletCount]->NewColor(1.0f, 1.0f, 1.0f, 1.f);
+	bullets[bulletCount]->Update();
+	bulletCount++;
 }
 
 void Player::Render(Camera* camera)
@@ -96,12 +149,13 @@ void Player::Render(Camera* camera)
 	// bind the material
 	material->Bind(camera, worldMatrix);
 	mesh->Render();
+	BulletsRender(camera);
 }
 
-void Player::BulletsRender()
+void Player::BulletsRender(Camera* camera)
 {
 	for (int i = 0; i < bulletCount; i++)
 	{
-		bullets[i]->Update();
+		bullets[i]->Render(camera);
 	}
 }

@@ -16,10 +16,6 @@ protected:
 	glm::mat4 worldMatrix;
 	GLFWwindow* window;
 
-	float speed;
-	bool reflectX;
-	bool reflectY;
-
 	/// <summary>
 	/// Changes the color of the game entity
 	/// </summary>
@@ -42,11 +38,12 @@ public:
 	/// </summary>
 	GameEntity();
 
-	//TODO - maybe this should be in a transform class?
 	glm::vec3 position;
 	glm::vec3 eulerAngles;
 	glm::vec3 scale;
 	glm::vec4 color;
+	float speed;
+	bool isDead;
 
     /// <summary>
     /// Destruction

@@ -23,13 +23,9 @@ GameEntity::GameEntity(Mesh * mesh,
 
 	this->window = window;
 
-	if (scale.y < 0.25f)
-		speed = 0.05f;
-	else
-		speed = 0.08f;
+	speed = 0;
 
-	reflectX = false;
-	reflectY = false;
+	isDead = false;
 }
 
 GameEntity::GameEntity()
@@ -42,6 +38,8 @@ GameEntity::~GameEntity()
 
 void GameEntity::Update()
 {
+	this->position.y += speed;
+
 	worldMatrix = glm::translate(
 		glm::identity<glm::mat4>(),
 		this->position
@@ -74,23 +72,10 @@ void GameEntity::Update()
 void GameEntity::CollideCheck(GameEntity* entity)
 {
 	// Collision Check
-	if (RightCheck(entity) && LeftCheck(entity) && UpCheck(entity) && DownCheck(entity))
+	if (this->RightCheck(entity) && this->LeftCheck(entity) && this->UpCheck(entity) && this->DownCheck(entity))
 	{
-		// BOT CHECK
-		if (entity->position.y - (entity->scale.y * .98f) > this->position.y)
-		{
-			this->position.y = entity->position.y - (entity->scale.y * 1.2f);
-			reflectY = !reflectY;
-		}
-
-		// TOP CHECK
-		else if (entity->position.y + (entity->scale.y * .98f) < this->position.y)
-		{
-			this->position.y = entity->position.y + (entity->scale.y * 1.2f);
-			reflectY = !reflectY;
-		}
-
-		reflectX = !reflectX;
+		this->isDead = true;
+		entity->isDead = true;
 	}
 }
 

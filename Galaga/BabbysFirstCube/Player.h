@@ -4,6 +4,8 @@
 class Player : public GameEntity
 {
 private:
+	int bulletCount;
+	bool spaceUp;
 
 	/// <summary>
 	/// Checks to see if we should move
@@ -18,9 +20,13 @@ private:
 	/// <summary>
 	/// Checks to see if we should move
 	/// </summary>
-	void BulletsRender();
+	void BulletsRender(Camera* camera);
 
-	int bulletCount;
+	/// <summary>
+	/// Creates a bullet
+	/// </summary>
+	void GenerateBullet();
+
 public:
 	Player(
 		Mesh* mesh,
@@ -32,6 +38,8 @@ public:
 	);
 	~Player();
 	GameEntity** bullets;
+	GameEntity** enemies;
+	int* enemyCount;
 
 	/// <summary>
 	/// Updates the worldMatrix

@@ -148,7 +148,7 @@ int main()
 		squareMesh->InitWithVertexArray(squareVertices, _countof(squareVertices), shaderProgram);
 
         //TODO - maybe a GameEntityManager?
-		GameEntity** myGameEntities = new GameEntity*[100];
+		GameEntity** myGameEntities = new GameEntity*[25];
 		Star** starEntities = new Star*[200];
 		Player* playerEntity;
 		int entityCount = 0;
@@ -167,7 +167,29 @@ int main()
 			);
 			playerEntity->NewColor(0.5f, 0.5f, 1.0f, 1.f);
 
-			// Test Enemy
+			// Test Enemies
+			myGameEntities[entityCount] = new GameEntity(
+				squareMesh,
+				material,
+				glm::vec3(-1.0f, 3.0f, 0),
+				glm::vec3(0, 0, 0),
+				glm::vec3(0.15f, 0.15f, 1.0f),
+				window
+			);
+			myGameEntities[entityCount]->NewColor(1.0f, 0.0f, 0.0f, 1.f);
+			entityCount++;
+
+			myGameEntities[entityCount] = new GameEntity(
+				squareMesh,
+				material,
+				glm::vec3(1.0f, 3.0f, 0),
+				glm::vec3(0, 0, 0),
+				glm::vec3(0.15f, 0.15f, 1.0f),
+				window
+			);
+			myGameEntities[entityCount]->NewColor(1.0f, 0.0f, 0.0f, 1.f);
+			entityCount++;
+
 			myGameEntities[entityCount] = new GameEntity(
 				squareMesh,
 				material,
@@ -179,6 +201,8 @@ int main()
 			myGameEntities[entityCount]->NewColor(1.0f, 0.0f, 0.0f, 1.f);
 			entityCount++;
 		}
+		playerEntity->enemies = myGameEntities;
+		playerEntity->enemyCount = &entityCount;
 
 		/* Background effects */
 		{
@@ -246,9 +270,23 @@ int main()
 
             /* GAMEPLAY UPDATE */
 			playerEntity->Update();
+
+			int toDelete = -1;
 			for (int i = 0; i < entityCount; i++)
 			{
 				myGameEntities[i]->Update();
+				if (myGameEntities[i]->isDead)
+					toDelete = i;
+			}
+
+			// Checks to see if a bullet needs to delete
+			if (toDelete > -1)
+			{
+				delete myGameEntities[toDelete];
+				for (int i = toDelete; i < entityCount - 1; i++)
+					myGameEntities[i] = myGameEntities[i + 1];
+
+				entityCount--;
 			}
 
 			for (int i = 0; i < starCount; i++)
@@ -271,7 +309,8 @@ int main()
 			playerEntity->Render(myCamera);
 			for (int i = 0; i < entityCount; i++)
 			{
-				myGameEntities[i]->Render(myCamera);
+				if (!myGameEntities[i]->isDead)
+					myGameEntities[i]->Render(myCamera);
 			}
 
 			for (int i = 0; i < starCount; i++)
