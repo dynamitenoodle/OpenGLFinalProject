@@ -13,7 +13,9 @@
 int main()
 {
     {
+		// Music from https://www.youtube.com/watch?v=LXi5iqXAcNw&t=20s
 		// INTRO TEXT
+		std::cout << "Created by Coehl Gleckner and Pat Hosman" << std::endl;
 		std::cout << "Use A & D to move back and forth, and shoot the space ships with space!" << std::endl << std::endl << std::endl;
 
 		// get a random seed

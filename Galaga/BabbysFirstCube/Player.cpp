@@ -131,6 +131,7 @@ void Player::InputCheck()
 
 void Player::BulletsUpdate()
 {
+	int toDelete = -1;
 	for (int i = 0; i < bulletCount; i++)
 	{
 		if (!bullets[i]->isDead)
@@ -139,6 +140,7 @@ void Player::BulletsUpdate()
 			if (bullets[i]->position.y > 4.1f)
 			{
 				bullets[i]->isDead = true;
+				toDelete = i;
 			}
 
 			for (int j = 0; j < *enemyCount; j++)
@@ -148,24 +150,25 @@ void Player::BulletsUpdate()
 					enemies[j]->playDeathSound = true;
 					this->isDead = true;
 					enemies[j]->isDead = true;
+					toDelete = i;
 				}
 			}
 		}
 	}
 
-	// Checks to see if a bullet needs to delete
-	for (int i = 0; i < bulletCount; i++)
+	if (toDelete > -1) 
 	{
-		if (bullets[i]->isDead)
+		delete bullets[toDelete];
+		// Checks to see if a bullet needs to delete
+		for (int i = toDelete; i < bulletCount; i++)
 		{
-			delete bullets[i];
-			while (i < bulletCount) 
+			while (i < bulletCount)
 			{
 				bullets[i] = bullets[i + 1];
 				i++;
 			}
-			bulletCount--;
 		}
+		bulletCount--;
 	}
 }
 
