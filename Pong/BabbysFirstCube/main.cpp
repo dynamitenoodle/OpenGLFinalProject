@@ -15,6 +15,9 @@
 int main()
 {
     {
+		// words to start
+		std::cout << "Welcome to pong! use W & S to move your paddle and space to show the score!" << std::endl << std::endl << std::endl;
+
 		// get a random seed
 		srand(time(NULL));
 

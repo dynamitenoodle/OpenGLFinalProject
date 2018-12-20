@@ -7,6 +7,8 @@ private:
 	int bulletCount;
 	bool spaceUp;
 	irrklang::ISoundEngine* soundEngine;
+	int hitTimer;
+	bool isHit;
 
 	/// <summary>
 	/// Checks to see if we should move

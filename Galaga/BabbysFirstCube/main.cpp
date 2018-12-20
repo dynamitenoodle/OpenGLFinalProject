@@ -13,6 +13,9 @@
 int main()
 {
     {
+		// INTRO TEXT
+		std::cout << "Use A & D to move back and forth, and shoot the space ships with space!" << std::endl << std::endl << std::endl;
+
 		// get a random seed
 		srand(time(NULL));
 
@@ -163,40 +166,18 @@ int main()
 		int entityCount = 0;
 		int starCount = 0;
 
-		/*Creating the Game Objects*/
-		{
-			// Creating the player
-			playerEntity = new Player(
-				squareMesh,
-				material,
-				glm::vec3(0, -2.8f, 0), 
-				glm::vec3(0, 0, 0), 
-				glm::vec3(0.15f, 0.15f, 1.0f),
-				window,
-				soundEngine
-			);
-			playerEntity->NewColor(0.5f, 0.5f, 1.0f, 1.f);
-
-			// Test Enemies
-			
-			for (int i = -1; i < 2; i++) 
-			{
-				GLfloat x = i * 1.0f;
-				myGameEntities[entityCount] = new GameEntity(
-					triangleMesh,
-					material,
-					glm::vec3(x, 4.0f, 0),
-					glm::vec3(0.0f, 0.0f, 3.15f),
-					glm::vec3(0.15f, 0.15f, 1.0f),
-					window
-				);
-				myGameEntities[entityCount]->NewColor((rand() % 255) / 255.0f, (rand() % 255) / 255.0f, (rand() % 255) / 255.0f, 1.f);
-				myGameEntities[entityCount]->seekingPos = glm::vec3(x, 2.0f, 0);
-				myGameEntities[entityCount]->force = 0.01f;
-				myGameEntities[entityCount]->maxVel = 0.03f;
-				entityCount++;
-			}
-		}
+		// Creating the player
+		playerEntity = new Player(
+			squareMesh,
+			material,
+			glm::vec3(0, -2.8f, 0), 
+			glm::vec3(0, 0, 0), 
+			glm::vec3(0.15f, 0.15f, 1.0f),
+			window,
+			soundEngine
+		);
+		playerEntity->NewColor(0.5f, 0.5f, 1.0f, 1.f);
+		
 		playerEntity->enemies = myGameEntities;
 		playerEntity->enemyCount = &entityCount;
 
@@ -267,9 +248,43 @@ int main()
             /* GAMEPLAY UPDATE */
 			playerEntity->Update();
 
+			// Generating enemies
+			while (entityCount < 10)
+			{
+				int ran = ((rand() % 700) - 350) / 100.0f;
+				GLfloat x = ran * 0.75f;
+				GLfloat y;
+				if (ran < 0)
+					y = 2.0f - (ran * .25);
+				else
+					y = 2.0f + (ran * .25);
+
+				myGameEntities[entityCount] = new GameEntity(
+					triangleMesh,
+					material,
+					glm::vec3(x, (rand() % 10) + 4, 0),
+					glm::vec3(0.0f, 0.0f, 3.15f),
+					glm::vec3(0.15f, 0.15f, 1.0f),
+					window
+				);
+				myGameEntities[entityCount]->NewColor((rand() % 255) / 255.0f, (rand() % 255) / 255.0f, (rand() % 255) / 255.0f, 1.f);
+				myGameEntities[entityCount]->seekingPos = glm::vec3(x, y, 0);
+				myGameEntities[entityCount]->force = 0.01f;
+				myGameEntities[entityCount]->maxVel = 0.03f;
+				entityCount++;
+			}
+
 			int toDelete = -1;
 			for (int i = 0; i < entityCount; i++)
 			{
+				if (glm::abs(myGameEntities[i]->velocity.y) < 0.005f && myGameEntities[i]->position.y > 0)
+					myGameEntities[i]->seekingPos = playerEntity->position;
+				else
+					myGameEntities[i]->seekingPos.y = myGameEntities[i]->seekingPos.y - 2.0f;
+
+				if (myGameEntities[i]->position.y < -4.1f)
+					myGameEntities[i]->isDead = true;
+
 				myGameEntities[i]->UpdateTransform();
 				if (myGameEntities[i]->isDead) 
 					toDelete = i;
@@ -278,7 +293,9 @@ int main()
 			// Checks to see if a bullet needs to delete
 			if (toDelete > -1)
 			{
-				soundEngine->play2D("assets/audio/enemyDeath.wav", GL_FALSE);
+				if (myGameEntities[toDelete]->playDeathSound)
+					soundEngine->play2D("assets/audio/enemyDeath.wav", GL_FALSE);
+
 				delete myGameEntities[toDelete];
 				for (int i = toDelete; i < entityCount - 1; i++)
 					myGameEntities[i] = myGameEntities[i + 1];

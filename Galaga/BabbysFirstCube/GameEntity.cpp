@@ -29,6 +29,7 @@ GameEntity::GameEntity(Mesh * mesh,
 	force = 0;
 	maxVel = 0;
 	seekingPos = glm::vec3(0, 0, 0);
+	playDeathSound = false;
 
 	isDead = false;
 	bigColArea = new bool[4];
@@ -47,7 +48,37 @@ GameEntity::~GameEntity()
 void GameEntity::UpdateTransform()
 {
 	// makes sure we still need to seek
-	if (GetDistance(this->seekingPos.x, this->seekingPos.y) > .005f)
+	if (GetDistance(this->seekingPos.x, this->seekingPos.y) > .005f && this->maxVel != 0.05f)
+	{
+		// accel
+		this->acceleration.x = this->seekingPos.x - this->position.x;
+		this->acceleration.y = this->seekingPos.y - this->position.y;
+		float num = glm::sqrt((this->acceleration.x * this->acceleration.x) + (this->acceleration.y * this->acceleration.y));
+
+		// if we aren't not movin
+		if (num != 0)
+		{
+			this->acceleration.x /= num;
+			this->acceleration.y /= num;
+			this->acceleration *= this->force;
+		}
+
+		// vel
+		this->velocity += this->acceleration;
+
+		// clamp
+		if (glm::sqrt((this->velocity.x * this->velocity.x) + (this->velocity.y * this->velocity.y)) > this->maxVel)
+		{
+			float num2 = glm::sqrt((this->velocity.x * this->velocity.x) + (this->velocity.y * this->velocity.y));
+			this->velocity.x /= num2;
+			this->velocity.y /= num2;
+			this->velocity *= this->maxVel;
+		}
+
+		//set position
+		this->position += this->velocity;
+	}
+	else if (this->maxVel == 0.05f)
 	{
 		// accel
 		this->acceleration.x = this->seekingPos.x - this->position.x;
@@ -100,7 +131,7 @@ void GameEntity::UpdateTransform()
 	}
 }
 
-void GameEntity::CollideCheck(GameEntity* entity)
+bool GameEntity::CollideCheck(GameEntity* entity)
 {
 	// Collision Checking!
 	for (int i = 0; i < 4; i++) 
@@ -121,8 +152,7 @@ void GameEntity::CollideCheck(GameEntity* entity)
 							// Do an AABB check just to be sure we are hitting!
 							if (this->RightCheck(entity) && this->LeftCheck(entity) && this->UpCheck(entity) && this->DownCheck(entity))
 							{
-								this->isDead = true;
-								entity->isDead = true;
+								return true;
 							}
 						}
 					}
@@ -130,7 +160,7 @@ void GameEntity::CollideCheck(GameEntity* entity)
 			}
 		}
 	}
-	
+	return false;
 }
 
 bool GameEntity::RightCheck(GameEntity* entity) { return this->position.x + this->scale.x >= entity->position.x - entity->scale.x; }

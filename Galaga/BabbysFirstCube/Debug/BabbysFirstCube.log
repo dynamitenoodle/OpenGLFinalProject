@@ -1,10 +1,10 @@
-﻿  Player.cpp
+﻿  main.cpp
 c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\crtdbg.h(302): warning C4005: '_malloca': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\malloc.h(121): note: see previous definition of '_malloca'
-  GameEntity.cpp
-c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\crtdbg.h(302): warning C4005: '_malloca': macro redefinition
-  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\malloc.h(121): note: see previous definition of '_malloca'
-  Generating Code...
+c:\users\dynam\onedrive\documents\college\semester 5\openglfinalproject\galaga\babbysfirstcube\main.cpp(20): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\dynam\onedrive\documents\college\semester 5\openglfinalproject\galaga\babbysfirstcube\main.cpp(254): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\dynam\onedrive\documents\college\semester 5\openglfinalproject\galaga\babbysfirstcube\main.cpp(258): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\dynam\onedrive\documents\college\semester 5\openglfinalproject\galaga\babbysfirstcube\main.cpp(260): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
   BabbysFirstCube.vcxproj -> C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\Debug\BabbysFirstCube.exe
   A subdirectory or file C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\Debug\assets already exists.
   C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\assets\audio\13 Sound Effects.mp3

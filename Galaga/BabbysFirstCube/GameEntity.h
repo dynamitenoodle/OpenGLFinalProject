@@ -47,6 +47,7 @@ public:
 	float force;
 	float maxVel;
 	bool isDead;
+	bool playDeathSound;
 	glm::vec3 seekingPos;
 
 	// BSP Collisions
@@ -87,7 +88,7 @@ public:
 	/// <summary>
 	/// Checking Collision with other GameObjects
 	/// </summary>
-	void CollideCheck(GameEntity* entity);
+	bool CollideCheck(GameEntity* entity);
 
 	/// <summary>
 	/// Checking Right

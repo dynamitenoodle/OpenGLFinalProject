@@ -26,6 +26,8 @@ Player::Player(Mesh * mesh,
 
 	this->force = 0.005f;
 	this->maxVel = 0.05f;
+	this->hitTimer = 60;
+	this->isHit = true;
 
 	// Bullets
 	this->bullets = new GameEntity*[5];
@@ -34,9 +36,9 @@ Player::Player(Mesh * mesh,
 	this->soundEngine = soundEngine;
 
 	// super collisions
-	bigColArea = new bool[4];
-	medColArea = new bool[16];
-	smlColArea = new bool[64];
+	this->bigColArea = new bool[4];
+	this->medColArea = new bool[16];
+	this->smlColArea = new bool[64];
 }	
 
 
@@ -50,6 +52,17 @@ void Player::Update()
 	this->InputCheck();
 
 	this->UpdateTransform();
+
+	for (int i = 0; i < *this->enemyCount; i++)
+	{
+		if (this->CollideCheck(enemies[i]) && !this->isHit)
+		{
+			enemies[i]->playDeathSound = true;
+			enemies[i]->isDead = true;
+			this->isHit = true;
+			this->hitTimer = 60;
+		}
+	}
 	/*
 	Making sure the numbers were right, they were and i debugged for 30 minutes when they were still right >:((((((
 	std::cout << " BIG " << std::endl;
@@ -97,6 +110,7 @@ void Player::InputCheck()
 	// if we need to STOP
 	if (seekingCheck)
 	{
+		this->velocity *= .9f;
 		this->seekingPos = this->position;
 	}
 
@@ -105,7 +119,7 @@ void Player::InputCheck()
 	if (this->position.x < -width)
 		this->position.x = -width;
 
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && bulletCount < 5 && spaceUp)
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && bulletCount < 5 && spaceUp && !this->isHit)
 	{
 		spaceUp = false;
 		GenerateBullet();
@@ -117,7 +131,6 @@ void Player::InputCheck()
 
 void Player::BulletsUpdate()
 {
-	bool moveBullets = false;
 	for (int i = 0; i < bulletCount; i++)
 	{
 		if (!bullets[i]->isDead)
@@ -130,21 +143,29 @@ void Player::BulletsUpdate()
 
 			for (int j = 0; j < *enemyCount; j++)
 			{
-				bullets[i]->CollideCheck(enemies[j]);
+				if (bullets[i]->CollideCheck(enemies[j]))
+				{
+					enemies[j]->playDeathSound = true;
+					this->isDead = true;
+					enemies[j]->isDead = true;
+				}
 			}
 		}
-		else
-			moveBullets = true;
 	}
 
 	// Checks to see if a bullet needs to delete
-	if (moveBullets) 
+	for (int i = 0; i < bulletCount; i++)
 	{
-		delete bullets[0];
-		for (int i = 0; i < bulletCount - 1; i++)
-			bullets[i] = bullets[i + 1];
-
-		bulletCount--;
+		if (bullets[i]->isDead)
+		{
+			delete bullets[i];
+			while (i < bulletCount) 
+			{
+				bullets[i] = bullets[i + 1];
+				i++;
+			}
+			bulletCount--;
+		}
 	}
 }
 
@@ -174,7 +195,19 @@ void Player::GenerateBullet()
 void Player::Render(Camera* camera)
 {
 	// setting the color
-	this->ChangeColor(this->color.x, this->color.y, this->color.z, this->color.a);
+	if (this->hitTimer > 0)
+		hitTimer--;
+	else
+	{
+		hitTimer = 0;
+		this->isHit = false;
+	}
+	
+	if ((!this->isHit && this->hitTimer == 0) || this->hitTimer % 2 == 1)
+		this->ChangeColor(this->color.x, this->color.y, this->color.z, this->color.a);
+	else
+		this->ChangeColor(this->color.x, this->color.y, this->color.z, 0.0f);
+
 	// bind the material
 	material->Bind(camera, worldMatrix);
 	mesh->Render();
