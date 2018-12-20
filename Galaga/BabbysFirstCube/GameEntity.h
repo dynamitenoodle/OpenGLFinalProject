@@ -49,6 +49,11 @@ public:
 	bool isDead;
 	glm::vec3 seekingPos;
 
+	// BSP Collisions
+	bool* bigColArea;
+	bool* medColArea;
+	bool* smlColArea;
+
     /// <summary>
     /// Destruction
     /// </summary>
@@ -103,5 +108,11 @@ public:
 	/// Checking Down
 	/// </summary>
 	bool DownCheck(GameEntity* entity);
+
+	/// <summary>
+	/// Setting BSP boxes, with width, height, middleX and middleY specified, and num being the bigger box, depth being how far we have gone
+	/// </summary>
+	void BSPSet(float width, float height, float middleX, float middleY, int num, int depth);
+
 };
 

@@ -6,6 +6,7 @@ class Player : public GameEntity
 private:
 	int bulletCount;
 	bool spaceUp;
+	irrklang::ISoundEngine* soundEngine;
 
 	/// <summary>
 	/// Checks to see if we should move
@@ -34,7 +35,8 @@ public:
 		glm::vec3 position,
 		glm::vec3 eulerAngles,
 		glm::vec3 scale,
-		GLFWwindow* window
+		GLFWwindow* window,
+		irrklang::ISoundEngine* soundEngine
 	);
 	~Player();
 	GameEntity** bullets;

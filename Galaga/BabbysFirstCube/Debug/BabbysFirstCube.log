@@ -1,11 +1,17 @@
-﻿  GameEntity.cpp
+﻿  Player.cpp
 c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\crtdbg.h(302): warning C4005: '_malloca': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\malloc.h(121): note: see previous definition of '_malloca'
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\Debug\vc120.pdb'; linking object as if no debug info
+  GameEntity.cpp
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\crtdbg.h(302): warning C4005: '_malloca': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\malloc.h(121): note: see previous definition of '_malloca'
+  Generating Code...
   BabbysFirstCube.vcxproj -> C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\Debug\BabbysFirstCube.exe
   A subdirectory or file C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\Debug\assets already exists.
+  C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\assets\audio\13 Sound Effects.mp3
+  C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\assets\audio\background.mp3
+  C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\assets\audio\descendingEnemy.wav
+  C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\assets\audio\enemyDeath.wav
+  C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\assets\audio\shoot.wav
   C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\assets\shaders\fragmentShader.glsl
   C:\Users\dynam\OneDrive\Documents\College\Semester 5\OpenGLFinalProject\Galaga\assets\shaders\vertexShader.glsl
-  2 File(s) copied
+  7 File(s) copied

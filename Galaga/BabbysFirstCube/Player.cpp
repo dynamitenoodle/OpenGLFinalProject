@@ -8,7 +8,8 @@ Player::Player(Mesh * mesh,
 	glm::vec3 position,
 	glm::vec3 eulerAngles,
 	glm::vec3 scale,
-	GLFWwindow* window)
+	GLFWwindow* window,
+	irrklang::ISoundEngine* soundEngine)
 {
 	this->mesh = mesh;
 	this->material = material;
@@ -30,6 +31,12 @@ Player::Player(Mesh * mesh,
 	this->bullets = new GameEntity*[5];
 	this->bulletCount = 0;
 	this->spaceUp = true;
+	this->soundEngine = soundEngine;
+
+	// super collisions
+	bigColArea = new bool[4];
+	medColArea = new bool[16];
+	smlColArea = new bool[64];
 }	
 
 
@@ -43,6 +50,27 @@ void Player::Update()
 	this->InputCheck();
 
 	this->UpdateTransform();
+	/*
+	Making sure the numbers were right, they were and i debugged for 30 minutes when they were still right >:((((((
+	std::cout << " BIG " << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		if(this->bigColArea[i])
+			std::cout << i << " : " << bigColArea[i] << std::endl;
+	}
+	std::cout << " MED " << std::endl;
+	for (int i = 0; i < 16; i++)
+	{
+		if(this->medColArea[i])
+			std::cout << i << " : " << medColArea[i] << std::endl;
+	}
+	std::cout << " SML " << std::endl;
+	for (int i = 0; i < 64; i++)
+	{
+		if (this->smlColArea[i])
+			std::cout << i << " : " << smlColArea[i] << std::endl;
+	}
+	*/
 }
 
 void Player::InputCheck()
@@ -70,7 +98,6 @@ void Player::InputCheck()
 	if (seekingCheck)
 	{
 		this->seekingPos = this->position;
-		this->velocity *= .94f;
 	}
 
 	if (this->position.x > width)
@@ -123,12 +150,16 @@ void Player::BulletsUpdate()
 
 void Player::GenerateBullet()
 {
+	// plays sound
+	soundEngine->play2D("assets/audio/shoot.wav", GL_FALSE);
+
+	// creates the bullet
 	bullets[bulletCount] = new GameEntity(
 		mesh,
 		material,
 		position,
 		glm::vec3(0, 0, 0),
-		glm::vec3(0.05f, 0.05f, 1.0f),
+		glm::vec3(0.03f, 0.05f, 1.0f),
 		window
 	);
 	bullets[bulletCount]->force = .1f;

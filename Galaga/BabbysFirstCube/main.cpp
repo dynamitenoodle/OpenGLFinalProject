@@ -125,8 +125,13 @@ int main()
         std::cout << "Shaders compiled attached, and linked!" << std::endl;
 #endif // _DEBUG
 
-        //init the mesh (a cube)
-        //TODO - replace this with model loading
+
+		// Sound Engine
+		irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
+		soundEngine->setSoundVolume(0.3f);
+		soundEngine->play2D("assets/audio/background.mp3", GL_TRUE);
+
+		// square vertices
 		GLfloat squareVertices[] = {
 			-1.0f, -1.0f, 1.0f,
 			-1.0f, 1.0f, 1.0f,
@@ -136,6 +141,7 @@ int main()
 			-1.0f, 1.0f, 1.0f
 		};
 
+		// triangle vertices
 		GLfloat triangleVertices[] = {
 			-1.0f, -1.0f, 1.0f,
 			0.0f, 1.0f, 1.0f,
@@ -143,7 +149,6 @@ int main()
 		};
 
         //create our mesh & material
-        //TODO - maybe have a MeshManager & a MaterialManager
 		Material* material = new Material(shaderProgram);
 
 		Mesh* squareMesh = new Mesh();
@@ -152,7 +157,6 @@ int main()
 		Mesh* triangleMesh = new Mesh();
 		triangleMesh->InitWithVertexArray(triangleVertices, _countof(triangleVertices), shaderProgram);
 
-        //TODO - maybe a GameEntityManager?
 		GameEntity** myGameEntities = new GameEntity*[25];
 		Star** starEntities = new Star*[200];
 		Player* playerEntity;
@@ -168,7 +172,8 @@ int main()
 				glm::vec3(0, -2.8f, 0), 
 				glm::vec3(0, 0, 0), 
 				glm::vec3(0.15f, 0.15f, 1.0f),
-				window
+				window,
+				soundEngine
 			);
 			playerEntity->NewColor(0.5f, 0.5f, 1.0f, 1.f);
 
@@ -180,15 +185,15 @@ int main()
 				myGameEntities[entityCount] = new GameEntity(
 					triangleMesh,
 					material,
-					glm::vec3(x, 3.0f, 0),
+					glm::vec3(x, 4.0f, 0),
 					glm::vec3(0.0f, 0.0f, 3.15f),
 					glm::vec3(0.15f, 0.15f, 1.0f),
 					window
 				);
-				myGameEntities[entityCount]->NewColor(1.0f, 0.0f, 0.0f, 1.f);
-				myGameEntities[entityCount]->seekingPos = glm::vec3(x, 0.0f, 0);
+				myGameEntities[entityCount]->NewColor((rand() % 255) / 255.0f, (rand() % 255) / 255.0f, (rand() % 255) / 255.0f, 1.f);
+				myGameEntities[entityCount]->seekingPos = glm::vec3(x, 2.0f, 0);
 				myGameEntities[entityCount]->force = 0.01f;
-				myGameEntities[entityCount]->maxVel = 0.05f;
+				myGameEntities[entityCount]->maxVel = 0.03f;
 				entityCount++;
 			}
 		}
@@ -266,13 +271,14 @@ int main()
 			for (int i = 0; i < entityCount; i++)
 			{
 				myGameEntities[i]->UpdateTransform();
-				if (myGameEntities[i]->isDead)
+				if (myGameEntities[i]->isDead) 
 					toDelete = i;
 			}
 
 			// Checks to see if a bullet needs to delete
 			if (toDelete > -1)
 			{
+				soundEngine->play2D("assets/audio/enemyDeath.wav", GL_FALSE);
 				delete myGameEntities[toDelete];
 				for (int i = toDelete; i < entityCount - 1; i++)
 					myGameEntities[i] = myGameEntities[i + 1];
