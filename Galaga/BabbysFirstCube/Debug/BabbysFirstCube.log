@@ -1,1 +1,27 @@
-﻿
+﻿  Camera.cpp
+  GameEntity.cpp
+  Input.cpp
+  main.cpp
+Z:\IGMProfile\OpenGLFinalProject\Galaga\BabbysFirstCube\main.cpp(22,13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+Z:\IGMProfile\OpenGLFinalProject\Galaga\BabbysFirstCube\main.cpp(256,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+Z:\IGMProfile\OpenGLFinalProject\Galaga\BabbysFirstCube\main.cpp(260,15): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+Z:\IGMProfile\OpenGLFinalProject\Galaga\BabbysFirstCube\main.cpp(262,15): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+  Material.cpp
+  Mesh.cpp
+  Player.cpp
+  shader.cpp
+  Star.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'Z:\IGMProfile\OpenGLFinalProject\Galaga\Debug\vc120.pdb'; linking object as if no debug info
+  BabbysFirstCube.vcxproj -> Z:\IGMProfile\OpenGLFinalProject\Galaga\Debug\BabbysFirstCube.exe
+  A subdirectory or file Z:\IGMProfile\OpenGLFinalProject\Galaga\Debug\assets already exists.
+  Z:\IGMProfile\OpenGLFinalProject\Galaga\assets\audio\13 Sound Effects.mp3
+  Z:\IGMProfile\OpenGLFinalProject\Galaga\assets\audio\background.mp3
+  Z:\IGMProfile\OpenGLFinalProject\Galaga\assets\audio\descendingEnemy.wav
+  Z:\IGMProfile\OpenGLFinalProject\Galaga\assets\audio\enemyDeath.wav
+  Z:\IGMProfile\OpenGLFinalProject\Galaga\assets\audio\shoot.wav
+  Z:\IGMProfile\OpenGLFinalProject\Galaga\assets\shaders\fragmentShader.glsl
+  Z:\IGMProfile\OpenGLFinalProject\Galaga\assets\shaders\vertexShader.glsl
+  7 File(s) copied
